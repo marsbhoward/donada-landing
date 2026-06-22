@@ -208,6 +208,23 @@ function Nav() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const h1Ref = useRef<HTMLHeadingElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLHeadingElement>) => {
+    const el = h1Ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--shimmer-x', `${e.clientX - rect.left - rect.width * 1.5}px`);
+    el.classList.add('shimmer-hover');
+  };
+
+  const handleMouseLeave = () => {
+    const el = h1Ref.current;
+    if (!el) return;
+    el.style.removeProperty('--shimmer-x');
+    el.classList.remove('shimmer-hover');
+  };
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden">
       {/* Ambient glow behind logo */}
@@ -224,7 +241,12 @@ function Hero() {
         className="mb-10 rounded-full animate-float"
         priority
       />
-      <h1 className="hero-shimmer text-5xl sm:text-7xl font-bold tracking-tight leading-none mb-6 animate-fade-up [animation-delay:100ms]">
+      <h1
+        ref={h1Ref}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="hero-shimmer text-5xl sm:text-7xl font-bold tracking-tight leading-none mb-6 animate-fade-up [animation-delay:100ms] cursor-default select-none"
+      >
         DONADA NFTs.
       </h1>
       <p className="text-3xl sm:text-4xl font-light text-white/60 mb-4 tracking-wide animate-fade-up [animation-delay:250ms]">
