@@ -207,22 +207,67 @@ function Nav() {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
-function Hero() {
-  const h1Ref = useRef<HTMLHeadingElement>(null);
+const ORBIT_LIGHT: React.CSSProperties = {
+  position: 'absolute',
+  right: -4,
+  top: -4,
+  width: 7,
+  height: 7,
+  borderRadius: '50%',
+  background: 'var(--orbit-fill)',
+  boxShadow: 'var(--orbit-glow)',
+};
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLHeadingElement>) => {
-    const el = h1Ref.current;
+// Conic-gradient arc that fades from white (at 100% = bright head) to transparent
+// over 90°. Masked to a thin ring at the orbit radius (70 px from centre).
+// The 140×140 div is offset -10 px so its centre aligns with the 120×120 logo centre.
+const TRAIL_RING: React.CSSProperties = {
+  position: 'absolute',
+  top: -10,
+  left: -10,
+  width: 140,
+  height: 140,
+  borderRadius: '50%',
+  background: 'conic-gradient(from 0deg, transparent 0%, transparent 75%, var(--orbit-trail-far) 80%, var(--orbit-trail-near) 88%, var(--orbit-trail-mid) 95%, var(--orbit-trail-end) 100%)',
+  WebkitMask: 'radial-gradient(circle at center, transparent 67px, white 68px, white 72px, transparent 73px)',
+  mask:        'radial-gradient(circle at center, transparent 67px, white 68px, white 72px, transparent 73px)',
+  transformOrigin: 'center',
+  pointerEvents: 'none',
+};
+
+function Hero() {
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const arm1Ref       = useRef<HTMLDivElement>(null);
+  const arm2Ref       = useRef<HTMLDivElement>(null);
+  const trail1Ref     = useRef<HTMLDivElement>(null);
+  const trail2Ref     = useRef<HTMLDivElement>(null);
+  const rafRef        = useRef<number>(0);
+  const orbitState    = useRef({ angle: 0, hovering: false });
+
+  useEffect(() => {
+    const SPEED = 0.35;
+    const state = orbitState.current;
+    const tick = () => {
+      if (!state.hovering) state.angle = (state.angle + SPEED) % 360;
+      if (arm1Ref.current)   arm1Ref.current.style.transform   = `rotate(${state.angle}deg)`;
+      if (arm2Ref.current)   arm2Ref.current.style.transform   = `rotate(${state.angle + 180}deg)`;
+      // +90 shifts the conic bright-end (at 12 o'clock) to align with the light head
+      if (trail1Ref.current) trail1Ref.current.style.transform = `rotate(${state.angle + 90}deg)`;
+      if (trail2Ref.current) trail2Ref.current.style.transform = `rotate(${state.angle + 270}deg)`;
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  const handleOrbitMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    el.style.setProperty('--shimmer-x', `${e.clientX - rect.left - rect.width * 1.5}px`);
-    el.classList.add('shimmer-hover');
-  };
-
-  const handleMouseLeave = () => {
-    const el = h1Ref.current;
-    if (!el) return;
-    el.style.removeProperty('--shimmer-x');
-    el.classList.remove('shimmer-hover');
+    orbitState.current.angle = Math.atan2(
+      e.clientY - rect.top  - rect.height / 2,
+      e.clientX - rect.left - rect.width  / 2
+    ) * (180 / Math.PI);
   };
 
   return (
@@ -233,20 +278,33 @@ function Hero() {
         className="pointer-events-none absolute inset-0"
         style={{ background: 'radial-gradient(ellipse 55% 45% at 50% 48%, rgba(255,255,255,0.07) 0%, transparent 100%)' }}
       />
-      <Image
-        src="/Donada_Logo.png"
-        alt="DONADA"
-        width={120}
-        height={120}
-        className="mb-10 rounded-full animate-float"
-        priority
-      />
-      <h1
-        ref={h1Ref}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="hero-shimmer text-5xl sm:text-7xl font-bold tracking-tight leading-none mb-6 animate-fade-up [animation-delay:100ms] cursor-default select-none"
+
+      {/* Logo + orbiting lights */}
+      <div
+        ref={containerRef}
+        className="relative mb-10 animate-float"
+        style={{ width: 120, height: 120 }}
+        onMouseMove={handleOrbitMouseMove}
+        onMouseEnter={() => { orbitState.current.hovering = true; }}
+        onMouseLeave={() => { orbitState.current.hovering = false; }}
       >
+        <Image src="/Donada_Logo.png" alt="DONADA" width={120} height={120} className="rounded-full" priority />
+        {/* Fading arc trails — rendered before main arms so they sit underneath */}
+        <div ref={trail1Ref} aria-hidden="true" className="orbit-trail absolute pointer-events-none" style={TRAIL_RING} />
+        <div ref={trail2Ref} aria-hidden="true" className="orbit-trail absolute pointer-events-none" style={TRAIL_RING} />
+        {/* Orbit arm 1 */}
+        <div ref={arm1Ref} aria-hidden="true" className="absolute pointer-events-none"
+          style={{ top: '50%', left: '50%', width: 70, height: 0, transformOrigin: '0 0' }}>
+          <div className="orbit-light" style={ORBIT_LIGHT} />
+        </div>
+        {/* Orbit arm 2 — starts 180° opposite */}
+        <div ref={arm2Ref} aria-hidden="true" className="absolute pointer-events-none"
+          style={{ top: '50%', left: '50%', width: 70, height: 0, transformOrigin: '0 0' }}>
+          <div className="orbit-light" style={ORBIT_LIGHT} />
+        </div>
+      </div>
+
+      <h1 className="hero-shimmer text-5xl sm:text-7xl font-bold tracking-tight leading-none mb-6 animate-fade-up [animation-delay:100ms]">
         DONADA NFTs.
       </h1>
       <p className="text-3xl sm:text-4xl font-light text-white/60 mb-4 tracking-wide animate-fade-up [animation-delay:250ms]">
