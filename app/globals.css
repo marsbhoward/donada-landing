@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+/* ── Theme Variables ──────────────────────────────────────────────────────── */
+
+:root, [data-theme="dark"] {
+  --bg:          #0d0d0d;
+  --fg:          #f5f5f5;
+  --muted:       #888888;
+  --accent:      #ffffff;
+  --amber:       #c49a2f;
+  --nav-bg:      rgba(13, 13, 13, 0.85);
+  --btn-bg:      #ffffff;
+  --btn-fg:      #000000;
+}
+
+[data-theme="light"] {
+  --bg:          #f5f4f0;
+  --fg:          #111111;
+  --muted:       #555555;
+  --accent:      #000000;
+  --amber:       #8a6a18;
+  --nav-bg:      rgba(245, 244, 240, 0.88);
+  --btn-bg:      #111111;
+  --btn-fg:      #ffffff;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Register custom animations as Tailwind v4 theme tokens */
+@theme {
+  --animate-float:       float       5s   ease-in-out infinite;
+  --animate-fade-up:     fade-up     0.7s ease        both;
+  --animate-arrow-drip:  arrow-drip  1.4s ease-in-out infinite;
+  --animate-glow-pulse:  glow-pulse  3s   ease-in-out infinite;
+}
+
+.text-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.85);
+}
+[data-theme="light"] .text-stroke {
+  color: inherit;
+  -webkit-text-stroke: 0;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  margin: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Grain texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 220px;
+  opacity: 0.035;
+}
+[data-theme="light"] body::after { opacity: 0.018; }
+
+/* ── Glass Cards ─────────────────────────────────────────────────────────── */
+
+.glass {
+  background: linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 4px 32px rgba(0,0,0,0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 8px 40px rgba(0,0,0,0.35);
+}
+
+[data-theme="light"] .glass {
+  background: linear-gradient(145deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.60) 100%);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255,255,255,0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1.0),
+    0 4px 24px rgba(0,0,0,0.08),
+    0 1px 3px rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .glass:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1.0),
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 6px rgba(0,0,0,0.07);
+}
+
+/* ── Light Mode Overrides ────────────────────────────────────────────────── */
+
+/* Nav */
+[data-theme="light"] nav {
+  background-color: var(--nav-bg) !important;
+  border-bottom-color: rgba(0,0,0,0.06) !important;
+}
+
+/* Nav Launch App button — visible border in light mode */
+[data-theme="light"] .nav-launch {
+  border-color: rgba(0,0,0,0.30) !important;
+}
+
+/* Primary button */
+[data-theme="light"] .btn-primary {
+  background-color: var(--btn-bg) !important;
+  color: var(--btn-fg) !important;
+}
+
+/* Text — use [class*="..."] substring matching to avoid Tailwind v4 escaping issues */
+[data-theme="light"] [class*="text-white"] { color: rgba(0,0,0,0.85) !important; }
+[data-theme="light"] [class~="text-black"] { color: #fff !important; }
+
+/* Muted text (#888 → #555) */
+[data-theme="light"] .text-\[\#888\] { color: #555 !important; }
+[data-theme="light"] [class*="text-[#888]"] { color: #555 !important; }
+
+/* Borders */
+[data-theme="light"] [class*="border-white"] { border-color: rgba(0,0,0,0.10) !important; }
+
+/* White/opacity backgrounds (cards, dividers, separators) */
+[data-theme="light"] [class*="bg-white/"] { background-color: rgba(0,0,0,0.05) !important; }
+
+/* Solid white bg (e.g. hero button) — placed after the wildcard so same-specificity cascade wins */
+[data-theme="light"] .bg-white { background-color: #111 !important; }
+
+/* Hover: dark bg + light text for buttons */
+[data-theme="light"] [class*="hover:bg-white"]:hover  { background-color: #111 !important; }
+[data-theme="light"] [class*="hover:text-black"]:hover { color: #fff !important; }
+[data-theme="light"] [class*="hover:text-white"]:hover { color: #111 !important; }
+[data-theme="light"] [class*="hover:bg-white/"]:hover  { background-color: rgba(0,0,0,0.05) !important; }
+
+/* Ring */
+[data-theme="light"] [class*="ring-white"] { --tw-ring-color: rgba(0,0,0,0.15) !important; }
+
+/* Glow pulse adjusted for light bg */
+[data-theme="light"] .animate-glow-pulse {
+  animation: glow-pulse-light 3s ease-in-out infinite;
+}
+@keyframes glow-pulse-light {
+  0%, 100% { box-shadow: 0 0 0px 0px rgba(0,0,0,0);    }
+  50%       { box-shadow: 0 0 18px 4px rgba(0,0,0,0.07); }
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+
+@keyframes ping-tight {
+  0%   { transform: scale(1);   opacity: 0.4; }
+  100% { transform: scale(1.2); opacity: 0;   }
+}
+.animate-ping-tight { animation: ping-tight 2s ease-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes arrow-drip {
+  0%, 100% { transform: translateY(0);   opacity: 0.25; }
+  50%       { transform: translateY(5px); opacity: 0.5;  }
+}
+.animate-arrow-drip { animation: arrow-drip 1.4s ease-in-out infinite; }
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0px 0px rgba(255,255,255,0);    }
+  50%       { box-shadow: 0 0 18px 2px rgba(255,255,255,0.06); }
+}
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Amber/gold accent ───────────────────────────────────────────────────── */
+
+.text-amber { color: var(--amber); }
+
+.accent-dot {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px rgba(196, 154, 47, 0.22);
+}
+
+/* ── Hero headline shimmer ───────────────────────────────────────────────── */
+
+@keyframes text-shimmer {
+  0%   { background-position: -300% center; }
+  100% { background-position:  300% center; }
+}
+
+.hero-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.82) 0%,
+    rgba(255,255,255,0.95) 35%,
+    rgba(255,220,130,0.88) 50%,
+    rgba(255,255,255,0.95) 65%,
+    rgba(255,255,255,0.82) 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 8s linear infinite;
+}
+
+[data-theme="light"] .hero-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(17,17,17,0.88) 0%,
+    rgba(10,10,10,0.95) 35%,
+    rgba(138,106,24,0.90) 50%,
+    rgba(10,10,10,0.95) 65%,
+    rgba(17,17,17,0.88) 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 8s linear infinite;
+}
+
+/* ── Nav link sliding underline ─────────────────────────────────────────── */
+
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
