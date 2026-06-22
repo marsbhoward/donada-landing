@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState, ReactNode } from 'react';
 
-const APP_URL = 'https://app.donada.io';
+const APP_URL  = 'https://app.donada.io';
+const MINT_URL = 'https://mint.donada.io';
 
 // ── Scroll-triggered fade-up ──────────────────────────────────────────────────
 
@@ -327,6 +328,14 @@ function Hero() {
           className="px-8 py-3.5 rounded-full border border-white/20 text-sm font-medium hover:bg-white/5 transition-colors"
         >
           How It Works
+        </a>
+        <a
+          href={MINT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:opacity-90 transition-opacity"
+        >
+          Mint
         </a>
       </div>
       <div className="flex items-center gap-6 mt-8 animate-fade-up [animation-delay:700ms]">

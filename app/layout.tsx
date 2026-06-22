@@ -17,11 +17,13 @@ export const metadata: Metadata = {
     siteName: 'DONADA',
     locale: 'en_US',
     type: 'website',
+    images: [{ url: '/link_preview.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'DONADA',
     description: 'Cardano NFTs. Rent. Enter. Win. Prizes paid automatically on-chain.',
+    images: ['/link_preview.png'],
   },
 };
 
