@@ -235,6 +235,12 @@ body::after {
   animation: text-shimmer 8s linear infinite;
 }
 
+/* Mouse-tracking state — overrides animation for both themes */
+.hero-shimmer.shimmer-hover {
+  animation: none !important;
+  background-position: var(--shimmer-x, 0px) center !important;
+}
+
 [data-theme="light"] .hero-shimmer {
   background: linear-gradient(
     90deg,
