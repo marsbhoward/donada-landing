@@ -29,13 +29,13 @@
   --nav-bg:      rgba(245, 244, 240, 0.88);
   --btn-bg:      #111111;
   --btn-fg:      #ffffff;
-  /* Orbit lights — white core, dark amber ring keeps it visible on cream bg */
+  /* Orbit lights — match dark mode */
   --orbit-fill:       rgba(255, 255, 255, 1);
-  --orbit-glow:       0 0 0 1.5px rgba(100,70,10,0.55), 0 0 6px 3px rgba(138,106,24,0.65), 0 0 18px 7px rgba(138,106,24,0.25);
-  --orbit-trail-end:  rgba(0, 0, 0, 0.88);
-  --orbit-trail-mid:  rgba(0, 0, 0, 0.60);
-  --orbit-trail-near: rgba(0, 0, 0, 0.25);
-  --orbit-trail-far:  rgba(0, 0, 0, 0.06);
+  --orbit-glow:       0 0 4px 2px rgba(255,255,255,1), 0 0 12px 5px rgba(255,230,170,0.75), 0 0 22px 8px rgba(196,154,47,0.3);
+  --orbit-trail-end:  rgba(255, 255, 255, 0.82);
+  --orbit-trail-mid:  rgba(255, 255, 255, 0.52);
+  --orbit-trail-near: rgba(255, 255, 255, 0.18);
+  --orbit-trail-far:  rgba(255, 255, 255, 0.04);
 }
 
 @theme inline {
@@ -316,6 +316,28 @@ body::after {
   animation: text-shimmer 8s linear infinite;
 }
 
+
+/* ── Hero secondary button ───────────────────────────────────────────────── */
+
+[data-theme="light"] .hero-secondary {
+  background-color: #ffffff !important;
+  border-color: rgba(0,0,0,0.10) !important;
+  color: #111 !important;
+}
+[data-theme="light"] .hero-secondary:hover {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+}
+
+/* ── Hero ambient glow ───────────────────────────────────────────────────── */
+
+.hero-ambient {
+  background: radial-gradient(ellipse 55% 45% at 50% 48%, rgba(255,255,255,0.07) 0%, transparent 100%);
+}
+[data-theme="light"] .hero-ambient {
+  background: radial-gradient(ellipse 55% 45% at 50% 48%, rgba(0,0,0,0.07) 0%, transparent 100%);
+}
 
 /* ── Nav link sliding underline ─────────────────────────────────────────── */
 

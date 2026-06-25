@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, ReactNode } from 'react';
 
 const APP_URL  = 'https://app.donada.io';
 const MINT_URL = 'https://mint.donada.io';
@@ -286,11 +286,7 @@ function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden">
       {/* Ambient glow behind logo */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse 55% 45% at 50% 48%, rgba(255,255,255,0.07) 0%, transparent 100%)' }}
-      />
+      <div aria-hidden="true" className="hero-ambient pointer-events-none absolute inset-0" />
 
       {/* Logo + orbiting lights */}
       <div
@@ -352,7 +348,7 @@ function Hero() {
         )}
         <a
           href="#how-it-works"
-          className="px-8 py-3.5 rounded-full border border-white/20 text-sm font-medium hover:bg-white/5 transition-colors"
+          className="hero-secondary px-8 py-3.5 rounded-full border border-white/20 text-sm font-medium hover:bg-white hover:text-black transition-colors"
         >
           How It Works
         </a>
@@ -376,18 +372,19 @@ function Hero() {
 
 // ── Theme Toggle ──────────────────────────────────────────────────────────────
 
+function subscribeToTheme(cb: () => void) {
+  const observer = new MutationObserver(cb);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  return () => observer.disconnect();
+}
+const getTheme       = () => (document.documentElement.getAttribute('data-theme') ?? 'dark') as 'dark' | 'light';
+const getServerTheme = () => 'dark' as const;
+
 function ThemeToggle() {
-  // Lazy initializer reads from DOM (already set by the blocking script in layout.tsx).
-  // On the server window is undefined so defaults to 'dark'; suppressHydrationWarning on the
-  // button suppresses the icon mismatch for users whose system theme is light.
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    return (document.documentElement.getAttribute('data-theme') ?? 'dark') as 'dark' | 'light';
-  });
+  const theme = useSyncExternalStore(subscribeToTheme, getTheme, getServerTheme);
 
   const toggle = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   };
@@ -400,7 +397,7 @@ function ThemeToggle() {
       className="text-[#888] hover:text-white transition-colors p-1"
     >
       {theme === 'dark' ? (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" suppressHydrationWarning>
           <circle cx="12" cy="12" r="5"/>
           <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
@@ -408,7 +405,7 @@ function ThemeToggle() {
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
       ) : (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" suppressHydrationWarning>
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       )}
