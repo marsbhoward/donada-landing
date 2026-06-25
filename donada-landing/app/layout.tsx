@@ -36,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full antialiased">
-        {/* beforeInteractive runs before any Next.js/React code — sets data-theme before first paint */}
         <Script
           id="theme-init"
           strategy="beforeInteractive"
