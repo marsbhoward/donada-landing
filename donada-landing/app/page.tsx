@@ -113,6 +113,18 @@ const STATS = [
   { target: 1,     format: (n: number) => String(n),                        label: 'Quarterly prize winner',          estimated: false },
 ];
 
+// ── Mint-live hook ────────────────────────────────────────────────────────────
+
+function useMintLive() {
+  const [live, setLive] = useState(() => Date.now() >= MINT_DATE.getTime());
+  useEffect(() => {
+    if (live) return;
+    const id = setInterval(() => { if (Date.now() >= MINT_DATE.getTime()) setLive(true); }, 1000);
+    return () => clearInterval(id);
+  }, [live]);
+  return live;
+}
+
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
@@ -124,6 +136,9 @@ const NAV_LINKS = [
 
 function Nav() {
   const [open, setOpen] = useState(false);
+  const mintLive = useMintLive();
+  const navHref  = mintLive ? APP_URL  : MINT_URL;
+  const navLabel = mintLive ? 'Launch App' : 'Mint';
 
   return (
     <>
@@ -136,7 +151,7 @@ function Nav() {
           className="flex items-center gap-3 sm:cursor-default"
         >
           <Image src="/Donada_Logo.png" alt="DONADA" width={32} height={32} className="rounded-full" />
-          <span className="font-semibold tracking-widest text-sm"><span className="text-stroke">DON</span>ADA</span>
+          <span className="font-semibold tracking-widest text-base"><span className="text-stroke">DON</span>ADA</span>
           {/* Chevron — mobile only */}
           <svg
             className="sm:hidden w-3 h-3 text-[#888] transition-transform duration-200"
@@ -157,12 +172,10 @@ function Nav() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <a
-            href={APP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={navHref}
             className="nav-launch text-sm font-medium px-4 py-2 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all"
           >
-            Launch App
+            {navLabel}
           </a>
         </div>
       </nav>
@@ -191,13 +204,11 @@ function Nav() {
           ))}
           <div className="border-t border-white/[0.06] pt-4">
             <a
-              href={APP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={navHref}
               onClick={() => setOpen(false)}
               className="block text-center text-sm font-medium px-4 py-2.5 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all"
             >
-              Launch App
+              {navLabel}
             </a>
           </div>
         </div>
@@ -244,6 +255,7 @@ function Hero() {
   const trail2Ref     = useRef<HTMLDivElement>(null);
   const rafRef        = useRef<number>(0);
   const orbitState    = useRef({ angle: 0, hovering: false });
+  const mintLive      = useMintLive();
 
   useEffect(() => {
     const SPEED = 0.35;
@@ -314,15 +326,30 @@ function Hero() {
       <p className="text-base sm:text-lg text-[#888] max-w-md mb-12 leading-relaxed animate-fade-up [animation-delay:400ms]">
         Smart contracts. Trustless draws. Built on Cardano.
       </p>
-      <div className="flex flex-col sm:flex-row gap-4 animate-fade-up [animation-delay:550ms]">
-        <a
-          href={APP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:opacity-90 transition-opacity"
-        >
-          Launch App
-        </a>
+      <div className="flex flex-col sm:flex-row sm:items-end gap-4 animate-fade-up [animation-delay:550ms]">
+        {mintLive ? (
+          <a
+            href={APP_URL}
+            className="btn-primary px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:opacity-90 transition-opacity"
+          >
+            Launch App
+          </a>
+        ) : (
+          <div className="flex flex-col items-center gap-1.5">
+            <p className="text-[10px] text-[#888] uppercase tracking-widest">App Opens</p>
+            <div className="relative inline-flex">
+              <span
+                aria-disabled="true"
+                className="px-8 py-3.5 rounded-full bg-white/10 cursor-not-allowed select-none border border-white/10 font-semibold text-sm text-transparent"
+              >
+                Launch App
+              </span>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Countdown compact />
+              </div>
+            </div>
+          </div>
+        )}
         <a
           href="#how-it-works"
           className="px-8 py-3.5 rounded-full border border-white/20 text-sm font-medium hover:bg-white/5 transition-colors"
@@ -331,19 +358,17 @@ function Hero() {
         </a>
         <a
           href={MINT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
           className="btn-primary px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:opacity-90 transition-opacity"
         >
           Mint
         </a>
       </div>
       <div className="flex items-center gap-6 mt-8 animate-fade-up [animation-delay:700ms]">
-        <a href="https://x.com/donada_nft" target="_blank" rel="noopener noreferrer" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">X</a>
+        <a href="https://x.com/donada_nft" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">X</a>
         <span className="w-px h-3 bg-white/10" />
-        <a href="https://instagram.com/donada_nft" target="_blank" rel="noopener noreferrer" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">Instagram</a>
+        <a href="https://instagram.com/donada_nft" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">Instagram</a>
         <span className="w-px h-3 bg-white/10" />
-        <a href="https://discord.gg/r4UNu5qTU" target="_blank" rel="noopener noreferrer" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">Discord</a>
+        <a href="https://discord.gg/r4UNu5qTU" className="text-xs text-[#888] hover:text-white transition-colors tracking-wide">Discord</a>
       </div>
     </section>
   );
@@ -395,7 +420,7 @@ function ThemeToggle() {
 
 const MINT_DATE = new Date('2026-07-31T20:00:00.000Z'); // 3pm CDT
 
-function Countdown() {
+function Countdown({ compact = false }: { compact?: boolean }) {
   const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
 
   useEffect(() => {
@@ -417,13 +442,13 @@ function Countdown() {
   if (!timeLeft) return null;
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs text-[#888] uppercase tracking-widest">Mint Opens</p>
-      <div className="flex items-end gap-3">
+    <div className={compact ? 'flex items-end gap-2.5' : 'flex flex-col gap-2'}>
+      {!compact && <p className="text-xs text-[#888] uppercase tracking-widest">Mint Opens</p>}
+      <div className={compact ? 'contents' : 'flex items-end gap-3'}>
         {[{ v: timeLeft.d, l: 'Days' }, { v: timeLeft.h, l: 'Hrs' }, { v: timeLeft.m, l: 'Min' }, { v: timeLeft.s, l: 'Sec' }].map(({ v, l }) => (
           <div key={l} className="flex flex-col items-center">
-            <span className="font-mono text-xl font-bold tabular-nums">{String(v).padStart(2, '0')}</span>
-            <span className="text-xs text-[#888]">{l}</span>
+            <span className={`font-mono font-bold tabular-nums ${compact ? 'text-sm' : 'text-xl'}`}>{String(v).padStart(2, '0')}</span>
+            <span className={`text-[#888] ${compact ? 'text-[9px]' : 'text-xs'}`}>{l}</span>
           </div>
         ))}
       </div>
@@ -667,8 +692,6 @@ function Collection() {
                   <span className="absolute inset-0 rounded-full animate-ping-tight" style={{ background: 'rgba(196,154,47,0.22)' }} />
                   <a
                     href="https://mint.donada.io"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="relative text-sm font-medium px-5 py-2.5 rounded-full border border-white/20 hover:bg-white/5 transition-colors"
                   >
                     Mint
@@ -676,8 +699,6 @@ function Collection() {
                 </div>
                 <a
                   href="https://www.wayup.io/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-sm font-medium px-5 py-2.5 rounded-full border border-white/20 hover:bg-white/5 transition-colors"
                 >
                   Browse Listings
@@ -755,10 +776,10 @@ function Footer() {
           <span className="tracking-widest text-xs font-medium text-white/40">DONADA</span>
         </div>
         <div className="flex items-center gap-6">
-          <a href="https://x.com/donada_nft" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">X</a>
-          <a href="https://instagram.com/donada_nft" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
-          <a href="https://discord.gg/r4UNu5qTU" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Discord</a>
-          <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">App</a>
+          <a href="https://x.com/donada_nft" className="hover:text-white transition-colors">X</a>
+          <a href="https://instagram.com/donada_nft" className="hover:text-white transition-colors">Instagram</a>
+          <a href="https://discord.gg/r4UNu5qTU" className="hover:text-white transition-colors">Discord</a>
+          <a href={APP_URL} className="hover:text-white transition-colors">App</a>
         </div>
         <span className="text-xs text-white/20">© {new Date().getFullYear()} DONADA</span>
       </div>
