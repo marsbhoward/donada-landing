@@ -53,7 +53,7 @@
 
 .text-stroke {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.85);
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.85);
 }
 [data-theme="light"] .text-stroke {
   color: inherit;
