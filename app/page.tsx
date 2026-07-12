@@ -108,8 +108,8 @@ function CountUpStat({
 
 const STATS = [
   { target: 1000,  format: (n: number) => n.toLocaleString(),              label: 'Piece NFT Collection on Cardano', estimated: false },
-  { target: 49800, format: (n: number) => `${(n / 1000).toFixed(1)}k ₳`,  label: 'ADA donated to charity',          estimated: true  },
-  { target: 99600, format: (n: number) => `${(n / 1000).toFixed(1)}k ₳`,  label: 'ADA awarded to winners',          estimated: true  },
+  { target: 50000, format: (n: number) => `${(n / 1000).toFixed(1)}k ₳`,  label: 'ADA donated to charity',          estimated: true  },
+  { target: 100000, format: (n: number) => `${(n / 1000).toFixed(1)}k ₳`,  label: 'ADA awarded to winners',          estimated: true  },
   { target: 1,     format: (n: number) => String(n),                        label: 'Quarterly prize winner',          estimated: false },
 ];
 
@@ -575,11 +575,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What is NFT renting?',
-    a: 'Renting lets you borrow a DONADA NFT for a fee set by the owner. While you hold the rental, you receive a draw entry just like an owner would. The owner earns passive yield, and 10% of every rental contract flows into the prize pool.',
+    a: 'Renting lets you borrow a DONADA NFT for a fee set by the owner. While you hold the rental, you receive a draw entry just like an owner would. The owner is paid the contract fee minus minus royalties. (10% of every rental contract flows into the prize pool.)',
   },
   {
     q: 'How are prizes funded?',
-    a: '20% of primary mint revenue seeds the prize pool. Ongoing rental fees (10% per contract) and royalties from secondary sales on the open market sustain draws after mint funds are distributed. 10% of mint proceeds also goes to verified 501(c) nonprofit charities.',
+    a: '20% of every mint (topped up by the project to a full ₳100 per NFT) goes into a ₳100,000 prize pool, paid out across 4 quarterly draws. Ongoing rental fees (10% per contract) and royalties from secondary sales on the open market sustain draws after mint funds are distributed. 10% of mint proceeds also goes to verified 501(c) nonprofit charities.',
   },
   {
     q: 'How do I know the draw is fair?',
