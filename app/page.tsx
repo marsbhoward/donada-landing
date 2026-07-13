@@ -575,7 +575,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What is NFT renting?',
-    a: 'Renting lets you borrow a DONADA NFT for a fee set by the owner. While you hold the rental, you receive a draw entry just like an owner would. The owner is paid the contract fee minus minus royalties. (10% of every rental contract flows into the prize pool.)',
+    a: 'Renting lets you borrow a DONADA NFT for a fee set by the owner. While you hold the rental, you receive a draw entry just like an owner would. The owner is paid the contract fee minus royalties. (10% of every rental contract flows into the prize pool.)',
   },
   {
     q: 'How are prizes funded?',
