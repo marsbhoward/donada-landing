@@ -415,7 +415,7 @@ function ThemeToggle() {
 
 // ── Countdown ─────────────────────────────────────────────────────────────────
 
-const MINT_DATE = new Date('2026-07-31T20:00:00.000Z'); // 3pm CDT
+const MINT_DATE = new Date('2026-07-31T21:00:00.000Z'); // 4pm CDT
 
 function Countdown({ compact = false }: { compact?: boolean }) {
   const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
